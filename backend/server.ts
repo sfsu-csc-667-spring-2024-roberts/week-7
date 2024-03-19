@@ -1,19 +1,13 @@
 import path from "path";
 import express from "express";
 import createError from "http-errors";
-import connectLiveReload from "connect-livereload";
 import morgan from "morgan";
-
 import rootRoutes from "./routes/root";
-import { setUpDevelopmentEnvironment } from "./utilities/set-up-development-environment";
+import testRoutes from "./routes/test";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-if (process.env.NODE_ENV === "development") {
-  setUpDevelopmentEnvironment();
-  connectLiveReload();
-}
+const PORT = process.env.PORT || 3000;
 
 app.use(morgan("dev"));
 
@@ -22,6 +16,7 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join("backend", "static")));
 
 app.use("/", rootRoutes);
+app.use("/tests", testRoutes);
 
 app.use((_request, _response, next) => {
   next(createError(404));
